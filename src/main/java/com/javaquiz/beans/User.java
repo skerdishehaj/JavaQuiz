@@ -28,6 +28,13 @@ public class User {
         this.email = email;
         this.isAdmin = isAdmin;
     }
+    public User(String username, String password, String email) {
+        super();
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.isAdmin = false;
+    }
 
     public int getId() {
         return id;
