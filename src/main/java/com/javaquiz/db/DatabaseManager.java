@@ -23,6 +23,8 @@ public class DatabaseManager {
             System.out.println("Connection established!");
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Exception in database connection: Connection failed!");
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
             e.printStackTrace();
         }
     }

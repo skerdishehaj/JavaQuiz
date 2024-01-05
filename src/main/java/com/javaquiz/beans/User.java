@@ -87,7 +87,7 @@ public class User {
                '}';
     }
 
-    // Testimi i l;asës User
+    // Testimi i kasës User
     public static void main(String[] args) {
         User user = new User(1, "admin", "admin", "admin", true);
         System.out.println(user);
