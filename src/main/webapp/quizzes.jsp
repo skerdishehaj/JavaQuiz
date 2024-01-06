@@ -56,7 +56,7 @@
                             <tbody>
                             <%
                                 QuizDAO quizDAO = new QuizDAOImpl();
-                                List<Quiz> quizzes = quizDAO.getAllQuizzes();// Replace this with the actual list of quizzes from your application
+                                List<Quiz> quizzes = quizDAO.getAllQuizzes(false);// Replace this with the actual list of quizzes from your application
                                 for (Quiz quiz : quizzes) {
                             %>
                             <tr>
@@ -92,7 +92,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Redirect to deleteQuiz.jsp with the quizId as a parameter
-                        window.location.href = 'deleteQuiz.jsp?id=' + quizId;
+                        window.location.href = 'deleteQuiz?id=' + quizId;
                     }
                 });
             }

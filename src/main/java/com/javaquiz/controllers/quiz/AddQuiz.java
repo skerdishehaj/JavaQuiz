@@ -10,16 +10,16 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 
-@WebServlet(name = "editQuiz", value = "/editQuiz")
-public class EditQuiz extends HttpServlet {
-QuizDAO quizDAO;
-    public EditQuiz() {
+@WebServlet(name = "addQuiz", value = "/addQuiz")
+public class AddQuiz extends HttpServlet {
+    QuizDAO quizDAO;
+    public AddQuiz() {
         super();
     }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        System.out.println("Login controller: init method STARTED");
+        System.out.println("AddQuiz controller: init method STARTED");
         super.init(config);
         this.quizDAO = new QuizDAOImpl();
     }
@@ -30,13 +30,12 @@ QuizDAO quizDAO;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("EditQuiz controller: doPost method STARTED");
+        System.out.println("AddQuiz controller: doPost method STARTED");
         editQuiz(request, response);
     }
 
     private void editQuiz(HttpServletRequest request, HttpServletResponse response) {
         //1- Validate the request
-        String quizId = request.getParameter("id");
         String quizTitle = request.getParameter("title");
         String quizTopic = request.getParameter("topic");
 
@@ -44,7 +43,12 @@ QuizDAO quizDAO;
 
         //2- Call DAO to update the quiz
         Quiz quiz = new Quiz(quizTitle, quizTopic);
-        this.quizDAO.updateQuiz(Integer.parseInt(quizId), quiz);
+        boolean quizzAdded = this.quizDAO.addQuiz(quiz);
+        if (quizzAdded) {
+            System.out.println("Quiz added successfully");
+        } else {
+            System.out.println("Quiz not added");
+        }
 
         //3- Redirect to the quiz list page
         // TODO - Add some status message to the session

@@ -67,36 +67,47 @@ public class QuestionDAOImpl implements QuestionDAO {
     }
 
     @Override
-    public boolean addQuestion(Question question) {
+    public int addQuestion(Question question) {
         try {
             // Insert the question into the Questions table
-            System.out.println("Executing query: INSERT INTO Questions (question_text, points, quiz_id) VALUES (?, ?, ?)");
+            System.out.printf("Executing query: INSERT INTO Questions (question_text, points, quiz_id) VALUES (%s, %d, %d)\n",
+                    question.getQuestionText(), question.getPoints(), question.getQuizId());
             int questionId = dbManager.executeUpdate(
                     "INSERT INTO Questions (question_text, points, quiz_id) VALUES (?, ?, ?)",
                     question.getQuestionText(), question.getPoints(), question.getQuizId()
             );
 
-            return questionId == 1;
+            return questionId;
         } catch (Exception e) {
-            System.out.println("Error executing query: INSERT INTO Questions (question_text, points, quiz_id) VALUES (?, ?, ?): " + e.getMessage());
+            System.out.printf("Error executing query: INSERT INTO Questions (question_text, points, quiz_id) VALUES (%s, %d, %d): %s\n",
+                    question.getQuestionText(), question.getPoints(), question.getQuizId(), e.getMessage());
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 
     @Override
-    public boolean updateQuestion(Question question) {
+    public boolean updateQuestion(int questionId, Question question) {
         try {
             // Update the question in the Questions table
-            System.out.println("Executing query: UPDATE Questions SET question_text=?, points=?, quiz_id=? WHERE id=?");
+            System.out.printf("Executing query: UPDATE Questions SET question_text=%s, points=%d, quiz_id=%s WHERE id=%d\n",
+                    question.getQuestionText(), question.getPoints(), question.getQuizId(), questionId);
             int questionCount = dbManager.executeUpdate(
                     "UPDATE Questions SET question_text=?, points=?, quiz_id=? WHERE id=?",
-                    question.getQuestionText(), question.getPoints(), question.getQuizId(), question.getId()
+                    question.getQuestionText(), question.getPoints(), question.getQuizId(), questionId
             );
+
+            // Update the options in the Options table
+/*            System.out.println("Updating options from QuestionDAOImpl");
+            OptionDAO optionDAO = new OptionDAOImpl();
+            for (Option option : question.getOptions()) {
+                optionDAO.updateOption(option.getId(), option);
+            }*/
 
             return questionCount == 1;
         } catch (Exception e) {
-            System.out.println("Error executing query: UPDATE Questions SET question_text=?, points=?, quiz_id=? WHERE id=?: " + e.getMessage());
+            System.out.printf("Error executing query: UPDATE Questions SET question_text=%s, points=%d, quiz_id=%s WHERE id=%d: %s\n",
+                    question.getQuestionText(), question.getPoints(), question.getQuizId(), questionId, e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -106,11 +117,11 @@ public class QuestionDAOImpl implements QuestionDAO {
     public boolean deleteQuestion(int questionId) {
         try {
             // Delete the question from the Questions table
-            System.out.println("Executing query: DELETE FROM Questions WHERE id=?");
+            System.out.printf("Executing query: DELETE FROM Questions WHERE id=%d\n", questionId);
             int questionCount = dbManager.executeUpdate("DELETE FROM Questions WHERE id=?", questionId);
             return questionCount == 1;
         } catch (Exception e) {
-            System.out.println("Error executing query: DELETE FROM Questions WHERE id=?: " + e.getMessage());
+            System.out.printf("Error executing query: DELETE FROM Questions WHERE id=%d: %s\n", questionId, e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -132,14 +143,14 @@ public class QuestionDAOImpl implements QuestionDAO {
     // Testing the QuestionDAOImpl class
     public static void main(String[] args) {
         QuestionDAOImpl questionDAOImpl = new QuestionDAOImpl();
-        /*for (int i = 0; i < 10; i++) {
+//        for (int i = 0; i < 10; i++) {
             questionDAOImpl.testAddQuestion();
-        }*/
+//        }
 //        questionDAOImpl.testUpdateQuestion();
 //        questionDAOImpl.testDeleteQuestion();
 //        questionDAOImpl.testGetQuestionById();
 //        questionDAOImpl.testGetAllQuestions();
-        questionDAOImpl.testGetAllQuestionsByQuizId();
+//        questionDAOImpl.testGetAllQuestionsByQuizId();
     }
 
     // Testing getAllQuestions() method
@@ -168,8 +179,8 @@ public class QuestionDAOImpl implements QuestionDAO {
         options.add(new Option(4, "Option 4", false));
 
         Question question = new Question("What is 2 + 2?", options, 5, 1);
-        boolean success = questionDAO.addQuestion(question);
-        System.out.println("Question added: " + success);
+        int id = questionDAO.addQuestion(question);
+        System.out.println("Question added: " + id);
     }
 
     // Testing updateQuestion() method
@@ -178,8 +189,8 @@ public class QuestionDAOImpl implements QuestionDAO {
         OptionDAO optionDAO = new OptionDAOImpl();
 
 
-        Question question = new Question(1, "Updated What is 2 + 2?", optionDAO.getAllOptionsByQuestionId(1), 10, 1);
-        boolean success = questionDAO.updateQuestion(question);
+        Question question = new Question("Updated What is 2 + 2?", optionDAO.getAllOptionsByQuestionId(1), 10, 1);
+        boolean success = questionDAO.updateQuestion(1, question);
         System.out.println("Question updated: " + success);
     }
 
@@ -189,6 +200,7 @@ public class QuestionDAOImpl implements QuestionDAO {
         boolean success = questionDAO.deleteQuestion(1); // assuming there is a question with id=1 in the database
         System.out.println("Question deleted: " + success);
     }
+
     // Testing getAllQuestionsByQuizId() method
     private void testGetAllQuestionsByQuizId() {
         QuestionDAO questionDAO = new QuestionDAOImpl();

@@ -22,6 +22,17 @@ public class Quiz {
         this.topic = topic;
         this.questions = questions;
     }
+    public Quiz(int id, String title, String topic) {
+        super();
+        this.id = id;
+        this.title = title;
+        this.topic = topic;
+    }
+    public Quiz(String title, String topic) {
+        super();
+        this.title = title;
+        this.topic = topic;
+    }
 
     public Quiz(String title, String topic, List<Question> questions) {
         super();

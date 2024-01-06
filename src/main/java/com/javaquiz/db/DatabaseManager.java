@@ -1,10 +1,6 @@
 package com.javaquiz.db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DatabaseManager {
     private static final String URL = "jdbc:mysql://localhost:3310/quiz_test?autoReconnect=true&useSSL=false";
@@ -51,6 +47,7 @@ public class DatabaseManager {
         }
     }
 
+/*
     public int executeUpdate(String query, Object... parameters) {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -61,6 +58,41 @@ public class DatabaseManager {
             return -1;
         }
     }
+*/
+public int executeUpdate(String query, Object... parameters) {
+    try {
+        PreparedStatement preparedStatement;
+
+        // Check if it's an insert or update
+        boolean insert = query.trim().toLowerCase().startsWith("insert");
+        if (insert) {
+            preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        } else {
+            preparedStatement = connection.prepareStatement(query);
+        }
+
+        setParameters(preparedStatement, parameters);
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        // Check if it's an insert and return the generated ID
+        if (insert && rowsAffected > 0) {
+            try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1); // Assuming the generated key is an integer
+                } else {
+                    throw new SQLException("Failed to retrieve the generated ID.");
+                }
+            }
+        } else {
+            return rowsAffected;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return -1;
+    }
+}
+
+
 
     private void setParameters(PreparedStatement preparedStatement, Object... parameters) throws SQLException {
         for (int i = 0; i < parameters.length; i++) {

@@ -6,7 +6,7 @@
 
 <%
     QuizDAO quizDAO = new QuizDAOImpl();
-    Quiz quiz = quizDAO.getQuizById(Integer.parseInt(request.getParameter("id")));
+    Quiz quiz = quizDAO.getQuizById(Integer.parseInt(request.getParameter("id")), false);
 %>
 
 <html>
@@ -37,7 +37,7 @@
 
                 <form action="editQuiz" method="post">
                     <div class="form-group">
-                        <label for="title">Title:</label>
+                        <label for="title">Title</label>
                         <input type="text" class="form-control" id="title" name="title" value="<%=quiz.getTitle()%>">
                     </div>
                     <div class="form-group">

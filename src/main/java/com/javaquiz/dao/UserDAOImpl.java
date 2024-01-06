@@ -70,9 +70,10 @@ public class UserDAOImpl implements UserDAO {
         try {
             int result = dbManager.executeUpdate("INSERT INTO Users (username, password, email, isAdmin) VALUES (?, ?, ?, ?)",
                     user.getUsername(), user.getPassword(), user.getEmail(), user.isAdmin());
-            return result == 1;
+            return result != -1;
         } catch (Exception e) {
-            System.out.println("Error while adding user to the database: INSERT INTO Users (username, password, email, isAdmin) VALUES (%s, %s, %s, %s)\n");
+            System.out.printf("Error while adding user to the database: INSERT INTO Users (username, password, email, isAdmin) VALUES (%s, %s, %s, %s)\n",
+                    user.getUsername(), user.getPassword(), user.getEmail(), user.isAdmin());
             e.printStackTrace();
             return false;
         }
@@ -166,6 +167,4 @@ public class UserDAOImpl implements UserDAO {
         boolean result = userDAO.deleteUser(4);
         System.out.println(result);
     }
-
-
 }

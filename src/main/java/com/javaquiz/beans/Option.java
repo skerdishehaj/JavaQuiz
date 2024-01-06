@@ -26,6 +26,11 @@ public class Option {
         this.optionText = optionText;
         this.isCorrect = isCorrect;
     }
+    public Option( String optionText, boolean isCorrect) {
+        super();
+        this.optionText = optionText;
+        this.isCorrect = isCorrect;
+    }
 
     public int getId() {
         return id;

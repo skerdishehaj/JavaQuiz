@@ -11,7 +11,7 @@ public interface OptionDAO {
 
     boolean addOption(Option option);
 
-    boolean updateOption(Option option);
+    boolean updateOption(int optionId, Option option);
 
     boolean deleteOption(int optionId);
 

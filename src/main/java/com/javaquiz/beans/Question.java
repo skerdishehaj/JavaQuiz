@@ -23,6 +23,12 @@ public class Question {
         this.points = points;
         this.quizId = quizId;
     }
+    public Question(String questionText, int points, int quizId) {
+        super();
+        this.questionText = questionText;
+        this.points = points;
+        this.quizId = quizId;
+    }
 
     public Question(int id, String questionText, List<Option> options, int points, int quizId) {
         super();

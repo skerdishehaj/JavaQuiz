@@ -55,7 +55,7 @@ public class OptionDAOImpl implements OptionDAO {
                                option.getQuestionId() + ", '" + option.getOptionText() + "', " + option.isCorrect() + ")");
             int resultCount = dbManager.executeUpdate("INSERT INTO Options (question_id, option_text, is_correct) VALUES (?, ?, ?)",
                     option.getQuestionId(), option.getOptionText(), option.isCorrect());
-            return resultCount == 1;
+            return resultCount != -1;
         } catch (Exception e) {
             System.out.println("Error executing query: INSERT INTO Options (question_id, option_text, is_correct) VALUES (" +
                                option.getQuestionId() + ", '" + option.getOptionText() + "', " + option.isCorrect() + "): " + e.getMessage());
@@ -65,18 +65,16 @@ public class OptionDAOImpl implements OptionDAO {
     }
 
     @Override
-    public boolean updateOption(Option option) {
+    public boolean updateOption(int optionId, Option option) {
         try {
-            System.out.println("Executing query: UPDATE Options SET question_id=" + option.getQuestionId() +
-                               ", option_text='" + option.getOptionText() + "', is_correct=" + option.isCorrect() +
-                               " WHERE id=" + option.getId());
-            int resultCount = dbManager.executeUpdate("UPDATE Options SET question_id=?, option_text=?, is_correct=? WHERE id=?",
-                    option.getQuestionId(), option.getOptionText(), option.isCorrect(), option.getId());
+            System.out.println("Executing query: UPDATE Options SET option_text='" + option.getOptionText() + "', is_correct=" + option.isCorrect() +
+                               " WHERE id=" + optionId);
+            int resultCount = dbManager.executeUpdate("UPDATE Options SET option_text=?, is_correct=? WHERE id=?",
+                    option.getOptionText(), option.isCorrect(), optionId);
             return resultCount == 1;
         } catch (Exception e) {
-            System.out.println("Error executing query: UPDATE Options SET question_id=" + option.getQuestionId() +
-                               ", option_text='" + option.getOptionText() + "', is_correct=" + option.isCorrect() +
-                               " WHERE id=" + option.getId() + ": " + e.getMessage());
+            System.out.println("Error executing query: UPDATE Options SET option_text='" + option.getOptionText() + "', is_correct=" + option.isCorrect() +
+                               " WHERE id=" + optionId + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -140,9 +138,9 @@ public class OptionDAOImpl implements OptionDAO {
     // Testing updateOption() method
     private void testUpdateOption() {
         OptionDAO optionDAO = new OptionDAOImpl();
-        Option option = new Option(1, "Python", false);
+        Option option = new Option("Python", false);
         option.setId(1); // assuming there is an option with id=1 in the database
-        boolean success = optionDAO.updateOption(option);
+        boolean success = optionDAO.updateOption(1, option);
         System.out.println("Option updated: " + success);
     }
 

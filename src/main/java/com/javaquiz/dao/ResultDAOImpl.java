@@ -56,7 +56,7 @@ public class ResultDAOImpl implements ResultDAO {
                     result.getUserId() + ", " + result.getQuizId() + ", " + result.getScore() + ", " + result.getDate() + ")");
             int resultCount = dbManager.executeUpdate("INSERT INTO Results (user_id, quiz_id, score, date) VALUES (?, ?, ?, ?)",
                     result.getUserId(), result.getQuizId(), result.getScore(), result.getDate());
-            return resultCount == 1;
+            return resultCount != -1;
         } catch (Exception e) {
             System.out.println("Error executing query: INSERT INTO Results (user_id, quiz_id, score, date) VALUES (" +
                     result.getUserId() + ", " + result.getQuizId() + ", " + result.getScore() + ", " + result.getDate() + "): " + e.getMessage());
