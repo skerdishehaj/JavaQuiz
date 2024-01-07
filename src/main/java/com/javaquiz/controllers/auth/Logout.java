@@ -40,6 +40,7 @@ public class Logout extends HttpServlet {
         System.out.println("Authentication controller: logout method STARTED");
         HttpSession session = request.getSession();
         session.invalidate();
-        response.sendRedirect("/index.jsp"); // TODO: to be changed
+        System.out.println("User logged out successfully. Session invalidated");
+        response.sendRedirect("login.jsp"); // TODO: to be changed
     }
 }

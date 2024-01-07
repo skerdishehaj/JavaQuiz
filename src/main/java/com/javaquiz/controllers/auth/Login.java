@@ -45,7 +45,7 @@ public class Login extends HttpServlet {
                 System.out.println("User logged in successfully");
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                response.sendRedirect("home.jsp"); // TODO: to be changed
+                response.sendRedirect("quizzes.jsp"); // TODO: to be changed
             } else {
                 System.out.println("Invalid username or password");
                 request.setAttribute("status", "error");
