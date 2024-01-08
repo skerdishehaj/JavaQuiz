@@ -105,10 +105,7 @@
                 </div>
             </div>
             <div class="sb-sidenav-footer">
-                <div class="small">Logged in as: <%
-                    User user = (User) session.getAttribute("user");
-                    out.print(user.getUsername());
-                %></div>
+                <div class="small">Logged in as: <%= ((User) session.getAttribute("user")).getUsername()%></div>
             </div>
         </nav>
     </div>

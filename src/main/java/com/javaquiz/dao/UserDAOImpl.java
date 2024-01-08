@@ -108,6 +108,36 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
+    @Override
+    public boolean emailExists(int userId, String email) {
+        try {
+            ResultSet resultSet = dbManager.executeQuery("SELECT COUNT(*) FROM Users WHERE email=? AND id<>?", email, userId);
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while checking if email exists in the database: SELECT COUNT(*) FROM Users WHERE email=" + email);
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean usernameExists(int userId, String username) {
+        try {
+            ResultSet resultSet = dbManager.executeQuery("SELECT COUNT(*) FROM Users WHERE username=? AND id<>?", username, userId);
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while checking if username exists in the database: SELECT COUNT(*) FROM Users WHERE username=" + username);
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private User createUserFromResultSet(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
         String username = resultSet.getString("username");

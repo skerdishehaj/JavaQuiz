@@ -28,8 +28,18 @@ public class User {
         this.email = email;
         this.isAdmin = isAdmin;
     }
+
     public User(String username, String password, String email) {
         super();
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.isAdmin = false;
+    }
+
+    public User(int id, String username, String password, String email) {
+        super();
+        this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;

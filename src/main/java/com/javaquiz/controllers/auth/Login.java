@@ -23,6 +23,7 @@ public class Login extends HttpServlet {
         super.init(config);
         this.userDAO = new UserDAOImpl();
     }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
@@ -45,7 +46,11 @@ public class Login extends HttpServlet {
                 System.out.println("User logged in successfully");
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
-                response.sendRedirect("quizzes.jsp"); // TODO: to be changed
+                if (user.isAdmin()) {
+                    response.sendRedirect("quizzes.jsp");
+                } else {
+                    response.sendRedirect("takeQuiz.jsp");
+                }// TODO: to be changed
             } else {
                 System.out.println("Invalid username or password");
                 request.setAttribute("status", "error");
@@ -59,6 +64,7 @@ public class Login extends HttpServlet {
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
+
     private boolean isValid(String credential) {
         return credential != null && !credential.trim().isEmpty();
     }
