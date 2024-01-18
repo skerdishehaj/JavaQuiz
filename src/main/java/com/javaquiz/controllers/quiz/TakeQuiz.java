@@ -20,6 +20,13 @@ import java.util.Map;
 @WebServlet(name = "takeQuiz", value = "/takeQuiz")
 public class TakeQuiz extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if ("true".equals(request.getParameter("reset"))) {
+            HttpSession session = request.getSession();
+            // Remove session attributes related to the previous quiz
+            session.removeAttribute("quiz");
+            session.removeAttribute("userAnswers");
+            session.removeAttribute("questionIndex");
+        }
         int quizId = Integer.parseInt(request.getParameter("quizId"));
 
         QuizDAO quizDAO = new QuizDAOImpl();
