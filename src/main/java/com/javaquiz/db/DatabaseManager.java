@@ -3,7 +3,7 @@ package com.javaquiz.db;
 import java.sql.*;
 
 public class DatabaseManager {
-    private static final String URL = "jdbc:mysql://localhost:3310/quiz_test?autoReconnect=true&useSSL=false";
+    private static final String URL = "jdbc:mysql://localhost:3333/quiz_test?autoReconnect=true&useSSL=false";
     private static final String USER = "root";
     private static final String PASSWORD = "root";
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";

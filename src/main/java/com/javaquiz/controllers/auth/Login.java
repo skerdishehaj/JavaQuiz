@@ -49,7 +49,7 @@ public class Login extends HttpServlet {
                 if (user.isAdmin()) {
                     response.sendRedirect("quizzes.jsp");
                 } else {
-                    response.sendRedirect("takeQuiz.jsp");
+                    response.sendRedirect("selectQuiz.jsp");
                 }// TODO: to be changed
             } else {
                 System.out.println("Invalid username or password");

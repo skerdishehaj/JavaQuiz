@@ -24,7 +24,7 @@ public class AuthFilter implements Filter {
     };
 
     private static final String[] USER_ALLOWED_PATHS = {
-            "/userProfile.jsp","/editUserProfile", "/takeQuiz.jsp", "/quizHistory.jsp"
+            "/userProfile.jsp","/editUserProfile", "/takeQuiz.jsp","/selectQuiz.jsp", "/quizHistory.jsp"
     };
 
     private static final String[] RESOURCE_DIRS = {
