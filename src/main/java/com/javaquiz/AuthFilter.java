@@ -1,3 +1,5 @@
+package com.javaquiz;
+
 import com.javaquiz.beans.User;
 
 import javax.servlet.Filter;
@@ -15,16 +17,15 @@ import java.io.IOException;
 @WebFilter("/*")
 public class AuthFilter implements Filter {
 
-    private static final String[] ALLOWED_PATHS = { "/login.jsp", "/registration.jsp", "/login", "/register" };
+    private static final String[] ALLOWED_PATHS = {"/login.jsp", "/registration.jsp", "/login", "/register", "/userProfile.jsp", "/editUserProfile"};
 
     private static final String[] ADMIN_ALLOWED_PATHS = {
             "/quizzes.jsp", "/addQuiz.jsp", "/editQuiz.jsp", "/addQuiz", "/editQuiz", "/deleteQuiz",
             "/questions.jsp", "/editQuestion.jsp", "/addQuestion.jsp", "/addQuestion", "/deleteQuestion",
-            "/userProfile.jsp", "/editUserProfile"
     };
 
     private static final String[] USER_ALLOWED_PATHS = {
-            "/userProfile.jsp","/editUserProfile", "/takeQuiz.jsp","/selectQuiz.jsp", "/quizHistory.jsp"
+            "/takeQuiz.jsp", "/selectQuiz.jsp", "/quizHistory.jsp"
     };
 
     private static final String[] RESOURCE_DIRS = {
@@ -150,7 +151,7 @@ public class AuthFilter implements Filter {
             System.out.println("AuthFilter: checkUserAccess method: session is not null");
             User user = (User) session.getAttribute("user");
 
-            if (user != null && !user.isAdmin() ) {
+            if (user != null && !user.isAdmin()) {
                 System.out.println("AuthFilter: checkUserAccess method: user is not null and is a simple user. Not ADMIN");
                 // User is logged in, allow access to the requested page
                 chain.doFilter(request, response);

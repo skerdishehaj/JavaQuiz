@@ -37,6 +37,10 @@
                         <label for="topic">Topic:</label>
                         <input type="text" class="form-control" id="topic" name="topic" placeholder="Enter topic...">
                     </div>
+                    <div class="form-group">
+                        <label for="photo">Photo URL:</label>
+                        <input type="text" class="form-control" id="photo" name="photo" placeholder="Enter photo url...">
+                    </div>
                     <input type="submit" class="btn btn-primary" value="Save Changes">
                 </form>
         </main>

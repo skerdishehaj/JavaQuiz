@@ -17,6 +17,20 @@ public class QuizDAOImpl implements QuizDAO {
         this.dbManager = DatabaseManager.getInstance();
     }
 
+    /*    @Override
+        public String getPhoto(int quizId) {
+            try {
+                System.out.println("Executing query: SELECT photo FROM Quizzes WHERE id=" + quizId);
+                ResultSet resultSet = dbManager.executeQuery("SELECT photo FROM Quizzes WHERE id=?", quizId);
+                if (resultSet.next()) {
+                    return resultSet.getString("photo");
+                }
+            } catch (SQLException e) {
+                System.out.println("Error executing query: SELECT photo FROM Quizzes WHERE id=" + quizId + ": " + e.getMessage());
+                e.printStackTrace();
+            }
+            return null;
+        }*/
     @Override
     public List<Quiz> getAllQuizzes(boolean includeQuestions) {
         List<Quiz> quizList = new ArrayList<>();
@@ -53,16 +67,16 @@ public class QuizDAOImpl implements QuizDAO {
     public boolean addQuiz(Quiz quiz) {
         try {
             // Insert the quiz into the Quizzes table
-            System.out.printf("Executing query: INSERT INTO Quizzes (title, topic) VALUES (%s, %s)\n",
-                    quiz.getTitle(), quiz.getTopic());
+            System.out.printf("Executing query: INSERT INTO Quizzes (title, topic, photo) VALUES (%s, %s, %s)\n",
+                    quiz.getTitle(), quiz.getTopic(), quiz.getPhoto());
             int quizId = dbManager.executeUpdate(
-                    "INSERT INTO Quizzes (title, topic) VALUES (?, ?)",
-                    quiz.getTitle(), quiz.getTopic()
+                    "INSERT INTO Quizzes (title, topic, photo) VALUES (?, ?, ?)",
+                    quiz.getTitle(), quiz.getTopic(), quiz.getPhoto()
             );
             return quizId == 1;
         } catch (Exception e) {
-            System.out.printf("Error executing query: INSERT INTO Quizzes (title, topic) VALUES (%s, %s): %s\n",
-                    quiz.getTitle(), quiz.getTopic(), e.getMessage());
+            System.out.printf("Error executing query: INSERT INTO Quizzes (title, topic, photo) VALUES (%s, %s, %s): %s\n",
+                    quiz.getTitle(), quiz.getTopic(), quiz.getPhoto(), e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -72,17 +86,17 @@ public class QuizDAOImpl implements QuizDAO {
     public boolean updateQuiz(int quizId, Quiz quiz) {
         try {
             // Update the quiz in the Quizzes table
-            System.out.printf("Executing query: UPDATE Quizzes SET title=%s, topic=%s WHERE id=%d\n",
-                    quiz.getTitle(), quiz.getTopic(), quizId);
+            System.out.printf("Executing query: UPDATE Quizzes SET title=%s, topic=%s, photo=%s WHERE id=%d\n",
+                    quiz.getTitle(), quiz.getTopic(), quiz.getPhoto(), quizId);
             int quizCount = dbManager.executeUpdate(
-                    "UPDATE Quizzes SET title=?, topic=? WHERE id=?",
-                    quiz.getTitle(), quiz.getTopic(), quizId
+                    "UPDATE Quizzes SET title=?, topic=?, photo=? WHERE id=?",
+                    quiz.getTitle(), quiz.getTopic(), quiz.getPhoto(), quizId
             );
 
             return quizCount != -1;
         } catch (Exception e) {
-            System.out.printf("Error executing query: UPDATE Quizzes SET title=%s, topic=%s WHERE id=%d: %s\n",
-                    quiz.getTitle(), quiz.getTopic(), quizId, e.getMessage());
+            System.out.printf("Error executing query: UPDATE Quizzes SET title=%s, topic=%s, photo=%s WHERE id=%d: %s\n",
+                    quiz.getTitle(), quiz.getTopic(), quiz.getPhoto(), quizId, e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -106,15 +120,16 @@ public class QuizDAOImpl implements QuizDAO {
         int id = resultSet.getInt("id");
         String title = resultSet.getString("title");
         String topic = resultSet.getString("topic");
+        String photo = resultSet.getString("photo");
 
         // Retrieve questions for the quiz
         if (includeQuestions) {
             QuestionDAO questionDAO = new QuestionDAOImpl();
             List<Question> questions = questionDAO.getAllQuestionsByQuizId(id);
-            return new Quiz(id, title, topic, questions);
+            return new Quiz(id, title, topic, photo, questions);
         }
 
-        return new Quiz(id, title, topic);
+        return new Quiz(id, title, topic, photo);
     }
 
     // Testing the QuizDAOImpl class
@@ -150,7 +165,7 @@ public class QuizDAOImpl implements QuizDAO {
         questions.add(new Question("Question 1", null, 5, 1));
         questions.add(new Question("Question 2", null, 10, 1));
 
-        Quiz quiz = new Quiz("Quiz 1", "Java", questions);
+        Quiz quiz = new Quiz("Quiz 1", "Java", "", questions);
         boolean success = quizDAO.addQuiz(quiz);
         System.out.println("Quiz added: " + success);
     }
@@ -162,7 +177,7 @@ public class QuizDAOImpl implements QuizDAO {
         questions.add(new Question("Updated Question 1", null, 8, 1));
         questions.add(new Question("Updated Question 2", null, 12, 1));
 
-        Quiz quiz = new Quiz("Updated Quiz 1", "Java", questions);
+        Quiz quiz = new Quiz("Updated Quiz 1", "Java", "", questions);
         boolean success = quizDAO.updateQuiz(1, quiz);
         System.out.println("Quiz updated: " + success);
     }

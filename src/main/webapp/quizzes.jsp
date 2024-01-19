@@ -10,10 +10,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
-    <title>Dashboard - SB Admin</title>
+    <title>Quizes</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet"/>
     <link href="css/styles.css" rel="stylesheet"/>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/2c88155f75.js" crossorigin="anonymous"></script>
 </head>
 
 <%@ include file="header.jsp" %> <!-- Include the header.jsp file -->
@@ -42,6 +43,7 @@
                             <th>Id</th>
                             <th>Title</th>
                             <th>Topic</th>
+                            <th>Photo</th>
                             <th data-sortable="false">Actions</th>
                         </tr>
                         </thead>
@@ -50,6 +52,7 @@
                             <th>Id</th>
                             <th>Title</th>
                             <th>Topic</th>
+                            <th>Photo</th>
                             <th data-sortable="false">Actions</th>
                         </tr>
                         </tfoot>
@@ -66,13 +69,18 @@
                             </td>
                             <td><%= quiz.getTopic() %>
                             </td>
+                            <td><img src="<%=quiz.getPhoto()%>" class="rounded "
+                                     alt="<%=quiz.getTitle()%>"
+                                     style="width: 4rem; height: 2rem; align-content: center;"/></td>
                             <td>
-                                <a href="editQuiz.jsp?id=<%= quiz.getId() %>" class="btn btn-primary">Edit</a>
-                                <button class="btn btn-danger" onclick="confirmDelete('<%= quiz.getId() %>')">Delete
-                                </button>
-                                <button class="btn btn-info" onclick="redirectToQuestions('<%= quiz.getId() %>')">
-                                    Questions
-                                </button>
+                                <a href="editQuiz.jsp?id=<%=quiz.getId()%>"><i
+                                        class="fa-solid fa-pen-to-square fa-xl"></i></a>
+                                <a href="#" onclick="confirmDelete('<%= quiz.getId() %>')"> <span style="color: red;"><i
+                                        class="fa-solid fa-trash fa-xl"></i></span>
+                                </a>
+                                <a href="questions.jsp?quizId=<%=quiz.getId()%>">
+                                    <span style="color: black;"> <i class="fa-solid fa-list fa-xl"></i></span>
+                                </a>
                             </td>
                         </tr>
                         <%

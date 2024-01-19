@@ -8,6 +8,7 @@ public class Quiz {
     private int id;
     private String title;
     private String topic;
+    private String photo;
     private List<Question> questions;
 
     // Konstruktor, getter dhe setter metoda
@@ -15,29 +16,35 @@ public class Quiz {
         super();
     }
 
-    public Quiz(int id, String title, String topic, List<Question> questions) {
+    public Quiz(int id, String title, String topic, String photo, List<Question> questions) {
         super();
         this.id = id;
         this.title = title;
         this.topic = topic;
+        this.photo = photo;
         this.questions = questions;
     }
-    public Quiz(int id, String title, String topic) {
+
+    public Quiz(int id, String title, String topic, String photo) {
         super();
         this.id = id;
         this.title = title;
         this.topic = topic;
-    }
-    public Quiz(String title, String topic) {
-        super();
-        this.title = title;
-        this.topic = topic;
+        this.photo = photo;
     }
 
-    public Quiz(String title, String topic, List<Question> questions) {
+    public Quiz(String title, String topic, String photo) {
         super();
         this.title = title;
         this.topic = topic;
+        this.photo = photo;
+    }
+
+    public Quiz(String title, String topic, String photo, List<Question> questions) {
+        super();
+        this.title = title;
+        this.topic = topic;
+        this.photo = photo;
         this.questions = questions;
     }
 
@@ -55,6 +62,14 @@ public class Quiz {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public String getTopic() {
@@ -85,7 +100,7 @@ public class Quiz {
 
     // Testimi i klasës Quiz
     public static void main(String[] args) {
-        Quiz quiz = new Quiz("Java Quiz", "Java", null);
+        Quiz quiz = new Quiz("Java Quiz", "Java", "", null);
         quiz.setQuestions(Arrays.asList(
                 new Question("What is Java?", Arrays.asList(
                         new Option(1, 1, "Java", true),

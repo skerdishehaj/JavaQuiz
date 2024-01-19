@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
-    <title>Dashboard - SB Admin</title>
+    <title>Quiz App</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet"/>
     <link href="css/styles.css" rel="stylesheet"/>
     <link href="css/questions-styles.css" rel="stylesheet"/>
@@ -80,24 +80,34 @@
                             for (Question question : questions) {
                         %>
                         <tr>
-                            <td><%= question.getId() %></td>
-                            <td><%= question.getQuestionText() %></td>
+                            <td><%= question.getId() %>
+                            </td>
+                            <td><%= question.getQuestionText() %>
+                            </td>
                             <td>
-                                <select class="custom-select" >
+                                <select class="custom-select">
                                     <%
                                         for (Option option : question.getOptions()) {
                                     %>
-                                    <option><%= option.getOptionText() %><%= option.isCorrect() ? " &#10004;" : "" %></option>
+                                    <option><%= option.getOptionText() %><%= option.isCorrect() ? " &#10004;" : "" %>
+                                    </option>
                                     <%
                                         }
                                     %>
                                 </select>
                             </td>
-                            <td><%= question.getPoints() %></td>
-                            <td><%= quizDAO.getQuizById(question.getQuizId(), false).getTitle() %></td>
+                            <td><%= question.getPoints() %>
+                            </td>
+                            <td><%= quizDAO.getQuizById(question.getQuizId(), false).getTitle() %>
+                            </td>
                             <td>
-                                <a href="editQuestion.jsp?id=<%= question.getId() %>" class="btn btn-primary">Edit</a>
-                                <button class="btn btn-danger" onclick="confirmDelete('<%= question.getId() %>')">Delete</button>
+
+                                <a href="editQuestion.jsp?id=<%= question.getId() %>"><i
+                                        class="fa-solid fa-pen-to-square fa-xl"></i></a>
+                                <a href="#" onclick="confirmDelete('<%= question.getId() %>')">
+                                    <span style="color: red;"><i
+                                            class="fa-solid fa-trash fa-xl"></i></span>
+                                </a>
                             </td>
                         </tr>
                         <%

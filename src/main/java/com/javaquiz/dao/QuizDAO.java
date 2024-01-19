@@ -10,4 +10,5 @@ public interface QuizDAO {
     boolean addQuiz(Quiz quiz);
     boolean updateQuiz(int quizId, Quiz quiz);
     boolean deleteQuiz(int quizId);
+//    String getPhoto(int quizId);
 }

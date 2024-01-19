@@ -25,7 +25,7 @@
                                     if(user.isAdmin()){
                                         out.print("quizzes.jsp");
                                     }else{
-                                        out.print("takeQuiz.jsp");
+                                        out.print("selectQuiz.jsp?reset=true");
                                     }%>">
                                 <i class="fas fa-arrow-left me-1"></i>
                                 Return

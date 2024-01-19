@@ -12,7 +12,8 @@ import java.io.IOException;
 
 @WebServlet(name = "editQuiz", value = "/editQuiz")
 public class EditQuiz extends HttpServlet {
-QuizDAO quizDAO;
+    QuizDAO quizDAO;
+
     public EditQuiz() {
         super();
     }
@@ -23,6 +24,7 @@ QuizDAO quizDAO;
         super.init(config);
         this.quizDAO = new QuizDAOImpl();
     }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
@@ -39,13 +41,18 @@ QuizDAO quizDAO;
         String quizId = request.getParameter("id");
         String quizTitle = request.getParameter("title");
         String quizTopic = request.getParameter("topic");
+        String quizPhoto = request.getParameter("photo");
 
         // TODO - Validate the request parameters
 
         //2- Call DAO to update the quiz
-        Quiz quiz = new Quiz(quizTitle, quizTopic);
-        this.quizDAO.updateQuiz(Integer.parseInt(quizId), quiz);
-
+        Quiz quiz = new Quiz(quizTitle, quizTopic, quizPhoto);
+        boolean quizUpdated = this.quizDAO.updateQuiz(Integer.parseInt(quizId), quiz);
+        if (quizUpdated) {
+            System.out.println("Quiz updated successfully");
+        } else {
+            System.out.println("Quiz not updated");
+        }
         //3- Redirect to the quiz list page
         // TODO - Add some status message to the session
         try {

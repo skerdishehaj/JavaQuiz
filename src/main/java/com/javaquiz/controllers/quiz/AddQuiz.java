@@ -38,11 +38,12 @@ public class AddQuiz extends HttpServlet {
         //1- Validate the request
         String quizTitle = request.getParameter("title");
         String quizTopic = request.getParameter("topic");
+        String quizPhoto = request.getParameter("photo");
 
         // TODO - Validate the request parameters
 
         //2- Call DAO to update the quiz
-        Quiz quiz = new Quiz(quizTitle, quizTopic);
+        Quiz quiz = new Quiz(quizTitle, quizTopic, quizPhoto);
         boolean quizzAdded = this.quizDAO.addQuiz(quiz);
         if (quizzAdded) {
             System.out.println("Quiz added successfully");

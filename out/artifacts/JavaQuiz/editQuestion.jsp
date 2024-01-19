@@ -93,6 +93,7 @@
 
                 <input type="hidden" name="questionId" value="<%=question.getId()%>">
                 <div class="form-group">
+                    <a href="quizzes.jsp" class="btn btn-secondary">Cancel</a>
                     <input type="submit" class="btn btn-primary" value="Save Changes">
                 </div>
             </form>
