@@ -25,15 +25,8 @@ import java.util.Map;
 public class TakeQuiz extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if ("true".equals(request.getParameter("reset"))) {
-            HttpSession session = request.getSession();
-            // Remove session attributes related to the previous quiz
-            session.removeAttribute("quiz");
-            session.removeAttribute("userAnswers");
-            session.removeAttribute("questionIndex");
-        }
-
         int quizId = Integer.parseInt(request.getParameter("quizId"));
+        System.out.println("Starting Quiz ID: " + quizId);
 
         QuizDAO quizDAO = new QuizDAOImpl();
         Quiz quiz = quizDAO.getQuizById(quizId, true);
@@ -83,6 +76,8 @@ public class TakeQuiz extends HttpServlet {
                 // Quiz completed, save results to the database and redirect to results page
                 saveQuizResults(session);
                 response.sendRedirect("quizResults.jsp");
+                System.out.println("Quiz completed");
+
             }
         } else {
             // Quiz completed, save results to the database and redirect to results page
@@ -98,7 +93,7 @@ public class TakeQuiz extends HttpServlet {
 
         if (quiz != null && userAnswers != null) {
             // Calculate the user's score based on the user's answers
-            int score = calculateScore(quiz, userAnswers);
+            int score = calculateScore((int) session.getAttribute("questionIndex"), quiz, userAnswers);
 
             // Retrieve user information (you may need to modify this based on your application)
             int userId = ((User) session.getAttribute("user")).getId();
@@ -110,13 +105,14 @@ public class TakeQuiz extends HttpServlet {
         }
     }
 
-    private int calculateScore(Quiz quiz, Map<Integer, Integer> userAnswers) {
+    private int calculateScore(int questionIndex, Quiz quiz, Map<Integer, Integer> userAnswers) {
         // Implement your logic to calculate the user's score based on the correct answers
         // Compare user's answers with correct answers and calculate the score
+        System.out.println(userAnswers.toString());
         int score = 0;
         List<Question> questions = quiz.getQuestions();
 
-        for (int i = 0; i < questions.size(); i++) {
+        for (int i = 0; i <= questionIndex; i++) {
             Question question = questions.get(i);
             int correctOptionId = question.getCorrectOptionId();
             int userSelectedOptionId = userAnswers.get(i);

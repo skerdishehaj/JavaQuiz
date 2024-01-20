@@ -16,6 +16,11 @@
         userAnswers = new HashMap<>();
         session.setAttribute("userAnswers", userAnswers);
     }
+    // Retrieve or initialize the timer value from the session
+    Integer timeRemaining = (Integer) session.getAttribute("timeRemaining");
+    if (timeRemaining == null || timeRemaining == 0) {
+        timeRemaining = 10;
+    }
 
     if (quiz != null && questionIndex != null && questionIndex < quiz.getQuestions().size()) {
         Question question = quiz.getQuestions().get(questionIndex);
@@ -43,6 +48,57 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+        // Initialize JavaScript variables with server-side values
+        var timeRemaining = <%= timeRemaining %>;
+
+        function updateTimerInServer(timeRemaining) {
+            $.ajax({
+                type: "POST",
+                url: "updateTimer", // Assuming your servlet is mapped to this URL
+                data: {timeRemaining: timeRemaining},
+                success: function (data) {
+                    console.log("Timer updated successfully");
+                },
+                error: function () {
+                    console.error("Error updating timer");
+                }
+            });
+        }
+
+        function startTimer() {
+            var timerInterval = setInterval(function () {
+                var minutes = Math.floor(timeRemaining / 60);
+                var seconds = timeRemaining % 60;
+                document.getElementById('timer').innerHTML = 'Time Remaining: ' + minutes + 'm ' + seconds + 's';
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                } else {
+                    timeRemaining--;
+                    // Update the timer value in the session
+                    updateTimerInServer(timeRemaining);
+                }
+            }, 1000);
+        }
+
+        function submitQuiz() {
+            $('#quizForm').append('<input type="hidden" name="action" value="Submit">');
+            document.getElementById('quizForm').submit();
+        }
+
+        $(document).ready(function () {
+            startTimer();
+        });
+    </script>
+
+
 </head>
 
 <%@ include file="header.jsp" %> <!-- Include the header.jsp file -->
@@ -56,7 +112,7 @@
                 </li>
             </ol>
             <div class="container-fluid">
-                <form action="takeQuiz" method="post">
+                <form id="quizForm" action="takeQuiz" method="post">
                     <h2 class="mb-3">Question #<%= questionIndex + 1 %> of <%= quiz.getQuestions().size() %>
                     </h2>
                     <div class="progress" role="progressbar" aria-label="Animated striped example"
@@ -93,11 +149,17 @@
                         <input type="submit" name="action" class="btn btn-primary" value="Next">
                         <% } %>
                     </div>
-                    <input type='hidden' name='questionIndex' value='<%= questionIndex %>'>
+                    <input type="hidden" name="questionIndex" value="<%= questionIndex %>">
+                    <% } else {
+                        response.sendRedirect("quizResults.jsp");
+                    } %>
                 </form>
+                <div class="mb-3">
+                    <span id="timer"></span>
+                </div>
             </div>
         </div>
     </main>
-        <% } %>
+
 
     <%@ include file="footer.jsp" %>

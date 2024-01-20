@@ -55,7 +55,7 @@
                     </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                    <% for (int i = 0; i < questions.size(); i++) {
+                    <% for (int i = 0; i < (int) session.getAttribute("questionIndex"); i++) {
                         Question question = questions.get(i);
                         int userAnswerId = userAnswers.get(i);
                         Option userAnswer = findOptionById(question.getOptions(), userAnswerId);

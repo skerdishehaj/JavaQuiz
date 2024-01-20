@@ -28,6 +28,15 @@
 
 <%@ include file="header.jsp" %> <!-- Include the header.jsp file -->
 
+    <%
+    if(request.getParameter("reset") != null) {
+        session.removeAttribute("quiz");
+        session.removeAttribute("userAnswers");
+        session.removeAttribute("questionIndex");
+        session.removeAttribute("timeRemaining");
+    }
+    %>
+
 <div id="layoutSidenav_content">
     <main>
         <div class="container-fluid px-4">
