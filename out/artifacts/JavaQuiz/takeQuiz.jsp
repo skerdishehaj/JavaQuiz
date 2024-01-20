@@ -82,8 +82,12 @@
                     submitQuiz();
                 } else {
                     timeRemaining--;
-                    // Update the timer value in the session
-                    updateTimerInServer(timeRemaining);
+
+                    // Check if the action is "Previous," "Next," or "Submit" before updating the timer
+                    var action = document.getElementById('action').value;
+                    if (action === "Previous" || action === "Next" || action === "Submit") {
+                        updateTimerInServer(timeRemaining);
+                    }
                 }
             }, 1000);
         }
@@ -97,7 +101,6 @@
             startTimer();
         });
     </script>
-
 
 </head>
 
