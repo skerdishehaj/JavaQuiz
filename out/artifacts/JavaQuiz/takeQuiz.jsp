@@ -87,17 +87,17 @@
                         <input type="submit" name="action" value="Previous" class="btn btn-secondary">
                         <% } %>
 
+                        <% if (questionIndex == quiz.getQuestions().size() - 1) { %>
+                        <input type="submit" name="action" class="btn btn-primary" value="Submit">
+                        <% } else { %>
                         <input type="submit" name="action" class="btn btn-primary" value="Next">
+                        <% } %>
                     </div>
-                    <%
-                        // Hidden input to store the question index for tracking selected answers
-                        out.println("<input type='hidden' name='questionIndex' value='" + questionIndex + "'>");
-                    %>
-                    <% } else {
-                        response.sendRedirect("quizResults.jsp");
-                    } %>
+                    <input type='hidden' name='questionIndex' value='<%= questionIndex %>'>
                 </form>
             </div>
         </div>
     </main>
+        <% } %>
+
     <%@ include file="footer.jsp" %>

@@ -1,6 +1,7 @@
 package com.javaquiz.dao;
 
 import com.javaquiz.beans.Result;
+import com.javaquiz.beans.ResultsReport;
 import com.javaquiz.db.DatabaseManager;
 
 import java.sql.ResultSet;
@@ -22,7 +23,7 @@ public class ResultDAOImpl implements ResultDAO {
         List<Result> resultList = new ArrayList<>();
         try {
             System.out.println("Executing query: SELECT * FROM Results");
-            ResultSet resultSet = dbManager.executeQuery("SELECT * FROM Results" );
+            ResultSet resultSet = dbManager.executeQuery("SELECT * FROM Results");
             while (resultSet.next()) {
                 Result result = createResultFromResultSet(resultSet);
                 resultList.add(result);
@@ -32,6 +33,45 @@ public class ResultDAOImpl implements ResultDAO {
             e.printStackTrace();
         }
         return resultList;
+    }
+
+    @Override
+    public List<ResultsReport> getAllResultsByUserId(int userId) {
+        try {
+            System.out.println("Executing query: SELECT R.id, U.username, Q.title, Q.topic, R.score, R.dates\n" +
+                               "                    FROM Results R\n" +
+                               "                    INNER JOIN Users U\n" +
+                               "                    \tON R.user_id=U.id\n" +
+                               "                    INNER JOIN Quizzes Q\n" +
+                               "                    \tON R.quiz_id=Q.id\n" +
+                               "                    WHERE R.user_id=" + userId);
+            ResultSet resultSet = dbManager.executeQuery("""
+                    SELECT R.id, U.username, Q.title, Q.topic, R.score, R.date\s
+                    FROM Results R
+                    INNER JOIN Users U
+                    	ON R.user_id=U.id
+                    INNER JOIN Quizzes Q
+                    	ON R.quiz_id=Q.id
+                    WHERE R.user_id=?
+                    """, userId);
+            List<ResultsReport> resultsReportList = new ArrayList<>();
+            while (resultSet.next()) {
+                ResultsReport resultReport = createResultsReportFromResultSet(resultSet);
+                resultsReportList.add(resultReport);
+            }
+            return resultsReportList;
+        } catch (SQLException e) {
+            System.out.println("Error executing query: SELECT R.id, U.username, Q.title, Q.topic, R.score, R.dates\n" +
+                               "                    FROM Results R\n" +
+                               "                    INNER JOIN Users U\n" +
+                               "                    \tON R.user_id=U.id\n" +
+                               "                    INNER JOIN Quizzes Q\n" +
+                               "                    \tON R.quiz_id=Q.id\n" +
+                               "                    WHERE R.user_id=" + userId + ": " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     @Override
@@ -52,14 +92,11 @@ public class ResultDAOImpl implements ResultDAO {
     @Override
     public boolean addResult(Result result) {
         try {
-            System.out.println("Executing query: INSERT INTO Results (user_id, quiz_id, score, date) VALUES (" +
-                    result.getUserId() + ", " + result.getQuizId() + ", " + result.getScore() + ", " + result.getDate() + ")");
-            int resultCount = dbManager.executeUpdate("INSERT INTO Results (user_id, quiz_id, score, date) VALUES (?, ?, ?, ?)",
-                    result.getUserId(), result.getQuizId(), result.getScore(), result.getDate());
+            System.out.println("Executing query: INSERT INTO Results (user_id, quiz_id, score, date) VALUES (" + result.getUserId() + ", " + result.getQuizId() + ", " + result.getScore() + ", " + result.getDate() + ")");
+            int resultCount = dbManager.executeUpdate("INSERT INTO Results (user_id, quiz_id, score, date) VALUES (?, ?, ?, ?)", result.getUserId(), result.getQuizId(), result.getScore(), result.getDate());
             return resultCount != -1;
         } catch (Exception e) {
-            System.out.println("Error executing query: INSERT INTO Results (user_id, quiz_id, score, date) VALUES (" +
-                    result.getUserId() + ", " + result.getQuizId() + ", " + result.getScore() + ", " + result.getDate() + "): " + e.getMessage());
+            System.out.println("Error executing query: INSERT INTO Results (user_id, quiz_id, score, date) VALUES (" + result.getUserId() + ", " + result.getQuizId() + ", " + result.getScore() + ", " + result.getDate() + "): " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -68,14 +105,11 @@ public class ResultDAOImpl implements ResultDAO {
     @Override
     public boolean updateResult(Result result) {
         try {
-            System.out.println("Executing query: UPDATE Results SET user_id=" + result.getUserId() + ", quiz_id=" + result.getQuizId() +
-                    ", score=" + result.getScore() + ", date=" + result.getDate() + " WHERE id=" + result.getId());
-            int resultCount = dbManager.executeUpdate("UPDATE Results SET user_id=?, quiz_id=?, score=?, date=? WHERE id=?",
-                    result.getUserId(), result.getQuizId(), result.getScore(), result.getDate(), result.getId());
+            System.out.println("Executing query: UPDATE Results SET user_id=" + result.getUserId() + ", quiz_id=" + result.getQuizId() + ", score=" + result.getScore() + ", date=" + result.getDate() + " WHERE id=" + result.getId());
+            int resultCount = dbManager.executeUpdate("UPDATE Results SET user_id=?, quiz_id=?, score=?, date=? WHERE id=?", result.getUserId(), result.getQuizId(), result.getScore(), result.getDate(), result.getId());
             return resultCount == 1;
         } catch (Exception e) {
-            System.out.println("Error executing query: UPDATE Results SET user_id=" + result.getUserId() + ", quiz_id=" + result.getQuizId() +
-                    ", score=" + result.getScore() + ", date=" + result.getDate() + " WHERE id=" + result.getId() + ": " + e.getMessage());
+            System.out.println("Error executing query: UPDATE Results SET user_id=" + result.getUserId() + ", quiz_id=" + result.getQuizId() + ", score=" + result.getScore() + ", date=" + result.getDate() + " WHERE id=" + result.getId() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -99,8 +133,18 @@ public class ResultDAOImpl implements ResultDAO {
         int userId = resultSet.getInt("user_id");
         int quizId = resultSet.getInt("quiz_id");
         int score = resultSet.getInt("score");
+        Date date = resultSet.getDate("date");
+        return new Result(id, userId, quizId, score, date);
+    }
+
+    private ResultsReport createResultsReportFromResultSet(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt("id");
+        String username = resultSet.getString("username");
+        String quizTitle = resultSet.getString("title");
+        String quizTopic = resultSet.getString("topic");
+        int score = resultSet.getInt("score");
         java.sql.Date date = resultSet.getDate("date");
-        return new Result(id, userId, quizId, score, new java.util.Date(date.getTime()));
+        return new ResultsReport(id, username, quizTitle, quizTopic, score, new java.util.Date(date.getTime()));
     }
 
     // Testing the ResultDAOImpl class

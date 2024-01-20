@@ -80,6 +80,16 @@ public class Question {
         this.quizId = quizId;
     }
 
+    public int getCorrectOptionId() {
+        for (Option option : options) {
+            if (option.isCorrect()) {
+                return option.getId();
+            }
+        }
+        return -1;
+    }
+
+
     @Override
     public String toString() {
         return "Question{" +
