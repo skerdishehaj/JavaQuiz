@@ -3,6 +3,7 @@ package com.javaquiz.controllers.auth;
 import com.javaquiz.beans.User;
 import com.javaquiz.dao.UserDAO;
 import com.javaquiz.dao.UserDAOImpl;
+import org.json.JSONObject;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -10,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(name = "register", value = "/register")
@@ -38,35 +38,38 @@ public class Register extends HttpServlet {
     }
 
     private void register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Register controller: register method STARTED");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        // Get form parameters
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
         User user = new User(username, password, email);
 
+        // Create JSON object for response
+        JSONObject jsonResponse = new JSONObject();
+
+        // Validate and process registration
         if (isValid(username) && isValid(password) && isValid(email)) {
-            System.out.println("Credentials are valid");
             User existedUser = userDAO.getUserByUsername(username);
-            if (existedUser != null ) {
-                System.out.println("User already exists");
-                request.setAttribute("status", "error");
-                request.setAttribute("error", "User already exists");
-                request.getRequestDispatcher("registration.jsp").forward(request, response);
-            }else if(userDAO.addUser(user)) {
-                System.out.println("User added successfully");
-                request.setAttribute("status", "success");
-                request.getRequestDispatcher("registration.jsp").forward(request, response);
+            if (existedUser != null) {
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "User already exists");
+            } else if (userDAO.addUser(user)) {
+                jsonResponse.put("status", "success");
+                jsonResponse.put("message", "User registered successfully");
             } else {
-                request.setAttribute("status", "error");
-                request.setAttribute("error", "Something went wrong");
-                request.getRequestDispatcher("registration.jsp").forward(request, response);
+                jsonResponse.put("status", "error");
+                jsonResponse.put("message", "Something went wrong");
             }
         } else {
-            System.out.println("Credentials are not valid");
-            request.setAttribute("status", "error");
-            request.setAttribute("error", "Fill all the fields");
-            request.getRequestDispatcher("registration.jsp").forward(request, response);
+            jsonResponse.put("status", "error");
+            jsonResponse.put("message", "Fill all the fields");
         }
+
+        // Send JSON response
+        response.getWriter().write(jsonResponse.toString());
     }
     private boolean isValid(String credential) {
         return credential != null && !credential.trim().isEmpty();

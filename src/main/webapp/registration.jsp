@@ -12,7 +12,78 @@
 
     <!-- Main css -->
     <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.2/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#register-form").submit(function (event) {
+                // Prevent the form from submitting in the traditional way
+                event.preventDefault();
+
+                // Serialize form data
+                var formData = $(this).serialize();
+
+                // AJAX request
+                $.ajax({
+                    type: "POST",
+                    url: "register",
+                    data: formData,
+                    success: function (response) {
+                        // Process the response
+                        if (response.status === "success") {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            // Clear form fields on error
+                            $("#username").val("");
+                            $("#email").val("");
+                            $("#password").val("");
+                            $("#re_pass").val("");
+                            // Redirect to a success page if needed
+                            // window.location.href = "login.jsp";
+                        } else if (response.status === "error") {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'error',
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            // Clear form fields on error
+                            $("#username").val("");
+                            $("#email").val("");
+                            $("#password").val("");
+                            $("#re_pass").val("");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Something went wrong',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        // Clear form fields on error
+                        $("#username").val("");
+                        $("#email").val("");
+                        $("#password").val("");
+                        $("#re_pass").val("");
+                    }
+                });
+            });
+        });
+    </script>
 </head>
+
+
 <body>
 
 <input type="hidden" id="status" value="<%=request.getAttribute("status")%>">
@@ -70,39 +141,6 @@
 
 
 </div>
-<!-- JS -->
-<%--<script--%>
-<%--		src="https://code.jquery.com/jquery-3.7.1.min.js"--%>
-<%--		integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="--%>
-<%--		crossorigin="anonymous"></script>--%>
 <script src="js/main.js"></script>
-<script type="text/javascript">
-</script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.2/dist/sweetalert2.min.css">
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-	let status = document.getElementById("status").value;
-	let message = document.getElementById("message").value;
-	if (status == "success") {
-		Swal.fire({
-			position: 'center',
-			icon: 'success',
-			title: 'Register Success',
-			showConfirmButton: false,
-			timer: 1500
-		})
-	} else if (status == "error") {
-		Swal.fire({
-			position: 'center',
-			icon: 'error',
-			title: message,
-			showConfirmButton: false,
-			timer: 1500
-		})
-	}
-</script>
-
-
 </body>
-<!-- This templates was made by Colorlib (https://colorlib.com) -->
 </html>
